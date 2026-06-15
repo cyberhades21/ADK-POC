@@ -8,3 +8,4 @@ chroma_db/
 logs/
 *.egg-info/
 .DS_Store
+src/.adk/
