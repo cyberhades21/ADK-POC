@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+ecombot.db
+chroma_db/
+logs/
+*.egg-info/
+.DS_Store

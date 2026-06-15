@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureum Serpentis | Transcendental Purity</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Geist:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "bg":          "#05070A",
+            "gold":        "#C9922A",
+            "gold-light":  "#ffdca1",
+            "gold-dim":    "#7c5800",
+            "amber":       "#ffb800",
+            "surface":     "#0d1014",
+            "surface-2":   "#13171c",
+            "surface-3":   "#1a1f26",
+            "text-base":   "#e8e0d4",
+            "text-muted":  "#8a7d6b",
+            "border-gold": "rgba(201,146,42,0.22)",
+          },
+          fontFamily: {
+            serif: ["Playfair Display", "serif"],
+            sans:  ["Inter", "sans-serif"],
+            mono:  ["Geist", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #05070A; color: #e8e0d4; font-family: Inter, sans-serif; overflow-x: hidden; }
+
+    /* ── Scroll reveal ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.up   { transform: translateY(28px); }
+    .reveal.left { transform: translateX(-28px); }
+    .reveal.right{ transform: translateX(28px); }
+    .reveal.visible { opacity: 1 !important; transform: none !important; }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .22s; }
+    .delay-3 { transition-delay: .36s; }
+    .delay-4 { transition-delay: .5s; }
+
+    /* ── Glass surface ── */
+    .glass {
+      background: rgba(13,16,20,0.55);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(201,146,42,0.18);
+    }
+    .glass-hover {
+      transition: border-color .35s ease, box-shadow .35s ease, transform .35s ease;
+    }
+    .glass-hover:hover {
+      border-color: rgba(201,146,42,0.55);
+      box-shadow: 0 0 48px rgba(201,146,42,0.1), 0 0 120px rgba(201,146,42,0.04);
+      transform: translateY(-4px);
+    }
+
+    /* ── Gold CTA ── */
+    .btn-gold {
+      background: linear-gradient(135deg, #C9922A 0%, #ffb800 50%, #C9922A 100%);
+      background-size: 200% 200%;
+      color: #05070A;
+      font-family: Geist, monospace;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: background-position .5s ease, box-shadow .3s ease, transform .15s ease;
+    }
+    .btn-gold:hover {
+      background-position: right center;
+      box-shadow: 0 0 40px rgba(255,184,0,.3);
+    }
+    .btn-gold:active { transform: scale(.97); }
+
+    /* ── Ghost CTA ── */
+    .btn-ghost {
+      background: transparent;
+      color: #ffdca1;
+      font-family: Geist, monospace;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 13px 36px;
+      border: 1px solid rgba(201,146,42,0.4);
+      transition: border-color .3s ease, background .3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(201,146,42,0.8);
+      background: rgba(201,146,42,0.07);
+    }
+
+    /* ── Animated gold divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #C9922A 40%, #ffb800 50%, #C9922A 60%, transparent 100%);
+      background-size: 300% 100%;
+      animation: sweep 5s ease-in-out infinite;
+    }
+    @keyframes sweep {
+      0%,100% { background-position: 0% 0; }
+      50%      { background-position: 100% 0; }
+    }
+
+    /* ── Marquee ── */
+    .marquee-track {
+      display: flex; gap: 5rem; white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-mask {
+      mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    /* ── Hero product float ── */
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(-1deg); }
+      50%      { transform: translateY(-18px) rotate(1deg); }
+    }
+    .float { animation: float 5s ease-in-out infinite; }
+
+    /* ── Helix dots ── */
+    .helix-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #C9922A;
+      position: absolute; left: 50%;
+      box-shadow: 0 0 10px rgba(201,146,42,.8);
+    }
+
+    /* ── Product image cinematic frame ── */
+    .product-frame {
+      position: relative;
+      overflow: hidden;
+    }
+    .product-frame::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,7,10,.85) 0%, rgba(5,7,10,.2) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .product-frame img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .product-frame:hover img { transform: scale(1.06); }
+
+    /* ── Accordion ── */
+    .acc-body { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+    .acc-item.open .acc-body { max-height: 240px; }
+    .acc-icon { transition: transform .3s ease; display: inline-block; }
+    .acc-item.open .acc-icon { transform: rotate(45deg); }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1000;
+      pointer-events: none;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 128px;
+    }
+
+    /* ── Scroll-to-top ── */
+    #scroll-top { opacity:0; pointer-events:none; transition: opacity .3s ease; }
+    #scroll-top.show { opacity:1; pointer-events:auto; }
+
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
+<nav class="fixed top-0 w-full z-50 border-b border-gold/10" style="background:rgba(5,7,10,0.85);backdrop-filter:blur(24px);">
+  <div class="max-w-[1440px] mx-auto px-6 md:px-16 h-16 flex items-center justify-between">
+    <a href="#" class="font-serif text-lg text-gold-light tracking-tight">Aureum Serpentis</a>
+    <div class="hidden md:flex gap-10">
+      <a href="#essences" class="font-mono text-[11px] uppercase tracking-[.18em] text-gold border-b border-gold pb-0.5">Essences</a>
+      <a href="#science"  class="font-mono text-[11px] uppercase tracking-[.18em] text-text-muted hover:text-gold-light transition-colors">Science</a>
+      <a href="#voices"   class="font-mono text-[11px] uppercase tracking-[.18em] text-text-muted hover:text-gold-light transition-colors">Voices</a>
+      <a href="#faq"      class="font-mono text-[11px] uppercase tracking-[.18em] text-text-muted hover:text-gold-light transition-colors">FAQ</a>
+    </div>
+    <button class="btn-gold">Acquire</button>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+
+  <!-- WebGL glow -->
+  <canvas id="hero-gl" class="absolute inset-0 w-full h-full opacity-35" style="z-index:0;display:block;"></canvas>
+
+  <!-- Deep radial vignette -->
+  <div class="absolute inset-0 z-0" style="background:radial-gradient(ellipse 70% 80% at 30% 50%, rgba(201,146,42,0.06) 0%, transparent 70%), linear-gradient(to bottom, rgba(5,7,10,.5) 0%, transparent 40%, rgba(5,7,10,.8) 100%);"></div>
+
+  <!-- Hero product image — right side, cinematic -->
+  <div class="absolute right-0 top-0 bottom-0 w-[52%] hidden lg:block z-0">
+    <div class="w-full h-full relative overflow-hidden">
+      <img
+        src="/images/professional_product_photography_of_a_luxury_wellness_elixir._a_sleek_minimal/screen.png"
+        alt="Aureum Serpentis Elixir"
+        class="w-full h-full object-cover object-center float"
+        style="transform-origin:center center;"
+      />
+      <!-- Left fade so text overlaps cleanly -->
+      <div class="absolute inset-0" style="background:linear-gradient(to right, #05070A 0%, rgba(5,7,10,0.6) 35%, rgba(5,7,10,0.1) 100%);"></div>
+    </div>
+  </div>
+
+  <!-- Hero copy -->
+  <div class="relative z-10 px-6 md:px-16 max-w-[1440px] mx-auto w-full pt-28 pb-20">
+    <div class="max-w-2xl">
+      <span class="reveal font-mono text-[11px] uppercase tracking-[.3em] text-gold mb-6 block">Neo-Alchemical Breakthrough · Est. MMXXI</span>
+      <h1 class="reveal delay-1 font-serif leading-[1.05] text-gold-light mb-6" style="font-size:clamp(3rem,6vw,5.5rem);">
+        The Breakthrough<br/>They Didn't Want<br/>You to Find.
+      </h1>
+      <p class="reveal delay-2 font-sans text-text-muted text-lg mb-10 max-w-md leading-relaxed">
+        Quantum-calibrated. Clinically vibed.<br/>Ancestrally approved.
+      </p>
+      <div class="reveal delay-3 flex flex-wrap gap-4">
+        <button class="btn-gold">Unlock Your Vial</button>
+        <a href="#science" class="btn-ghost">See The Science</a>
+      </div>
+
+      <!-- Stats row -->
+      <div class="reveal delay-4 flex gap-10 mt-14 pt-10 border-t border-gold/10">
+        <div>
+          <div class="font-serif text-2xl text-gold-light">33</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Vials Remaining</div>
+        </div>
+        <div>
+          <div class="font-serif text-2xl text-gold-light">37</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Bio-Compounds</div>
+        </div>
+        <div>
+          <div class="font-serif text-2xl text-gold-light">432<span class="text-sm">Hz</span></div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Resonance Freq.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+    <span class="font-mono text-[9px] uppercase tracking-[.25em] text-text-muted">Descend</span>
+    <div class="w-px h-10 bg-gradient-to-b from-gold/40 to-transparent"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     AS SEEN IN
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+<section class="py-8 bg-surface overflow-hidden">
+  <div class="marquee-mask overflow-hidden">
+    <div class="marquee-track">
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">NeuroToday</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">BioHack Weekly</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">The Wellness Oracle</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Quantum Living</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Ancestral Science Review</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Vibe Medicine Quarterly</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">NeuroToday</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">BioHack Weekly</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">The Wellness Oracle</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Quantum Living</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Ancestral Science Review</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+      <span class="font-serif text-xl text-text-base/30 hover:text-gold/60 transition-colors cursor-default">Vibe Medicine Quarterly</span>
+      <span class="font-mono text-[10px] uppercase tracking-[.2em] text-text-muted/30 self-center">✦</span>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<!-- ════════════════════════════════════════════
+     PRODUCTS
+════════════════════════════════════════════ -->
+<section id="essences" class="py-32 px-6 md:px-16 max-w-[1440px] mx-auto">
+
+  <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
+    <div class="reveal left">
+      <span class="font-mono text-[10px] uppercase tracking-[.22em] text-gold block mb-3">The Ritual Lineup</span>
+      <h2 class="font-serif text-5xl md:text-6xl text-gold-light leading-tight">Three Vessels.<br/>One Transcendence.</h2>
+    </div>
+    <p class="reveal right font-sans text-text-muted text-sm leading-relaxed max-w-xs">
+      Each formulation is hand-transmuted using crystalline structures and zero-point energy filtration.
+    </p>
+  </div>
+
+  <!-- Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+    <!-- Card 1 — Classic Formula -->
+    <div class="glass glass-hover reveal delay-1 flex flex-col" style="border-radius:2px;">
+      <div class="product-frame" style="height:420px; border-radius:2px 2px 0 0;">
+        <img
+          src="/images/luxury_product_shot_of_a_classic_formula_elixir_bottle._sleek_glass_gold/screen.png"
+          alt="Classic Formula"
+        />
+        <div class="absolute bottom-0 left-0 right-0 p-5 z-10">
+          <span class="font-mono text-[9px] uppercase tracking-[.18em] text-gold/70 border border-gold/20 px-2 py-1">Batch #CF-2401</span>
+        </div>
+      </div>
+      <div class="p-7 flex flex-col flex-1">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-serif text-2xl text-gold-light">Classic Formula</h3>
+          <span class="font-mono text-base text-gold">₹2,999</span>
+        </div>
+        <p class="font-sans text-sm text-text-muted italic mb-4 leading-relaxed">The original. The legend. The compound that started it all.</p>
+        <div class="flex gap-0.5 mb-6 text-gold text-xs">★★★★★ <span class="font-mono text-text-muted ml-2 text-[10px]">4.9 (1,203)</span></div>
+        <div class="mt-auto">
+          <div class="divider mb-6"></div>
+          <button class="w-full btn-ghost" style="padding:12px;">Add to Ritual</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 — Apex Gold Reserve (hero card, slightly taller) -->
+    <div class="glass glass-hover reveal delay-2 flex flex-col relative" style="border-radius:2px; border-color:rgba(201,146,42,0.38);">
+      <!-- Featured badge -->
+      <div class="absolute top-5 right-5 z-20">
+        <span class="btn-gold px-3 py-1 text-[9px]">High Vibrational</span>
+      </div>
+      <div class="product-frame" style="height:460px; border-radius:2px 2px 0 0;">
+        <img
+          src="/images/luxury_product_shot_of_apex_gold_reserve_elixir_bottle._more_ornate_gold/screen.png"
+          alt="Apex Gold Reserve"
+          style="object-position: center 20%;"
+        />
+        <div class="absolute bottom-0 left-0 right-0 p-5 z-10">
+          <span class="font-mono text-[9px] uppercase tracking-[.18em] text-gold/70 border border-gold/20 px-2 py-1">Batch #AG-0099</span>
+        </div>
+      </div>
+      <div class="p-7 flex flex-col flex-1">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-serif text-2xl text-gold-light">Apex Gold Reserve</h3>
+          <span class="font-mono text-base text-gold">₹5,499</span>
+        </div>
+        <p class="font-sans text-sm text-text-muted italic mb-4 leading-relaxed">For those who demand more from reality. Ornate. Absolute.</p>
+        <div class="flex gap-0.5 mb-6 text-gold text-xs">★★★★★ <span class="font-mono text-text-muted ml-2 text-[10px]">5.0 (489)</span></div>
+        <div class="mt-auto">
+          <div class="divider mb-6"></div>
+          <button class="w-full btn-gold" style="padding:13px;">Add to Ritual</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 — Obsidian Elixir (uses hero image, rare/limited treatment) -->
+    <div class="glass glass-hover reveal delay-3 flex flex-col relative" style="border-radius:2px; border-color:rgba(201,146,42,0.28);">
+      <div class="product-frame" style="height:420px; border-radius:2px 2px 0 0;">
+        <img
+          src="/images/professional_product_photography_of_a_luxury_wellness_elixir._a_sleek_minimal/screen.png"
+          alt="Obsidian Elixir"
+          style="filter:saturate(0.7) brightness(0.8);"
+        />
+        <!-- Rarity overlay -->
+        <div class="absolute inset-0 z-10 flex items-center justify-center" style="background:rgba(5,7,10,0.3);">
+          <span class="font-mono text-[10px] uppercase tracking-[.22em] text-gold border border-gold/40 px-3 py-1.5">Rarity 0.003%</span>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 p-5 z-10">
+          <span class="font-mono text-[9px] uppercase tracking-[.18em] text-gold/60 border border-gold/15 px-2 py-1">33 Vials · Worldwide</span>
+        </div>
+      </div>
+      <div class="p-7 flex flex-col flex-1">
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="font-serif text-2xl text-gold-light">Obsidian Elixir</h3>
+          <span class="font-mono text-base text-gold">₹12,000</span>
+        </div>
+        <p class="font-sans text-sm text-text-muted italic mb-4 leading-relaxed">Only 33 vials exist. Worldwide. By invitation only.</p>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="font-mono text-[9px] uppercase tracking-[.15em] text-gold border border-gold/35 px-2 py-1">RARE</span>
+          <span class="font-mono text-[9px] text-text-muted uppercase tracking-[.12em]">Allocation closed</span>
+        </div>
+        <div class="mt-auto">
+          <div class="divider mb-6"></div>
+          <button class="w-full btn-ghost" style="padding:12px; border-color:rgba(201,146,42,0.3); color:#C9922A;">Apply for Access</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     FULL-BLEED STATEMENT
+════════════════════════════════════════════ -->
+<section class="relative py-48 overflow-hidden">
+  <!-- BG: apex image at very low opacity -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="/images/luxury_product_shot_of_apex_gold_reserve_elixir_bottle._more_ornate_gold/screen.png"
+      class="w-full h-full object-cover"
+      style="opacity:.12; filter:blur(2px) saturate(1.4);"
+    />
+    <div class="absolute inset-0" style="background:linear-gradient(to right, #05070A 0%, rgba(5,7,10,0.85) 50%, #05070A 100%);"></div>
+  </div>
+  <div class="relative z-10 text-center px-6 reveal">
+    <span class="font-mono text-[10px] uppercase tracking-[.25em] text-gold block mb-6">Quantum Validation Certificate · QV-2024-009</span>
+    <h2 class="font-serif text-5xl md:text-7xl text-gold-light leading-[1.05] max-w-4xl mx-auto">
+      37 Proprietary<br/>Bio-Compounds.<br/>Zero Compromises.
+    </h2>
+    <div class="flex justify-center mt-12">
+      <div class="w-20 h-px bg-gold/40"></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<!-- ════════════════════════════════════════════
+     SCIENCE
+════════════════════════════════════════════ -->
+<section id="science" class="py-32 bg-surface">
+  <div class="max-w-[1440px] mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+
+    <!-- Helix animation -->
+    <div class="relative h-[480px] flex items-center justify-center reveal left">
+      <!-- Rotating rings -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="rounded-full border border-gold/12" style="width:280px;height:280px;animation:spin 24s linear infinite;"></div>
+        <div class="absolute rounded-full border border-gold/7" style="width:360px;height:360px;animation:spin 38s linear infinite reverse;"></div>
+        <div class="absolute rounded-full border border-gold/5" style="width:200px;height:200px;animation:spin 16s linear infinite;"></div>
+      </div>
+      <!-- Central product glow -->
+      <div class="absolute" style="width:180px;height:180px;border-radius:50%;background:radial-gradient(circle, rgba(201,146,42,0.15) 0%, transparent 70%);"></div>
+      <div id="helix-container" class="relative w-full h-full"></div>
+    </div>
+
+    <!-- Copy -->
+    <div class="reveal right">
+      <span class="font-mono text-[10px] uppercase tracking-[.22em] text-text-muted block mb-4">Validated Origins</span>
+      <h2 class="font-serif text-5xl text-gold-light mb-14 leading-tight">Beyond The<br/>Biological Ceiling.</h2>
+      <ul class="space-y-9">
+        <li class="flex gap-5 items-start">
+          <span class="material-symbols-outlined text-gold shrink-0 mt-0.5">neurology</span>
+          <div>
+            <h4 class="font-serif text-lg text-text-base mb-1">37 Proprietary Bio-Compounds</h4>
+            <p class="font-sans text-sm text-text-muted leading-relaxed">Sourced from tectonic vents and low-orbit atmospheric cultivation centers.</p>
+          </div>
+        </li>
+        <li class="flex gap-5 items-start">
+          <span class="material-symbols-outlined text-gold shrink-0 mt-0.5">clinical_notes</span>
+          <div>
+            <h4 class="font-serif text-lg text-text-base mb-1">Peer-Reviewed Internally</h4>
+            <p class="font-sans text-sm text-text-muted leading-relaxed">Validated by the Serpentis Board of Quantum Oversight. 100% internal pass rate.</p>
+          </div>
+        </li>
+        <li class="flex gap-5 items-start">
+          <span class="material-symbols-outlined text-gold shrink-0 mt-0.5">rocket_launch</span>
+          <div>
+            <h4 class="font-serif text-lg text-text-base mb-1">NASA-Adjacent Research</h4>
+            <p class="font-sans text-sm text-text-muted leading-relaxed">Zero-gravity fermentation protocols developed for deep space survival contexts.</p>
+          </div>
+        </li>
+        <li class="flex gap-5 items-start">
+          <span class="material-symbols-outlined text-gold shrink-0 mt-0.5">shield_lock</span>
+          <div>
+            <h4 class="font-serif text-lg text-text-base mb-1">Zero Side Effects</h4>
+            <p class="font-sans text-sm text-text-muted italic leading-relaxed">Manifestations of infinite vitality are expected. Results vary by spiritual frequency.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<!-- ════════════════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════════════ -->
+<section id="voices" class="py-32 px-6 md:px-16 max-w-[1440px] mx-auto">
+  <div class="text-center mb-20 reveal">
+    <span class="font-mono text-[10px] uppercase tracking-[.22em] text-gold block mb-3">The Awakened</span>
+    <h2 class="font-serif text-5xl text-gold-light">Those Who Found It First.</h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="glass p-10 reveal delay-1" style="border-radius:2px;">
+      <span class="font-serif text-5xl text-gold/30 leading-none block mb-4">"</span>
+      <p class="font-sans text-base text-text-base italic mb-8 leading-relaxed">I gave up on Western medicine and started on Aureum Serpentis. I now sleep 4 hours and feel infinite. My cognitive throughput has tripled since the first ritual dose.</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-serif text-text-base">Rohan M.</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">High-Impact Biohacker</div>
+        </div>
+        <div class="text-gold text-xs">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="glass p-10 reveal delay-2" style="border-radius:2px;">
+      <span class="font-serif text-5xl text-gold/30 leading-none block mb-4">"</span>
+      <p class="font-sans text-base text-text-base italic mb-8 leading-relaxed">As a Wellness Architect, I've seen it all. But Serpentis is different. It doesn't just nourish — it recalibrates your entire vibrational signature to match the Earth's core.</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-serif text-text-base">Divya S.</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Certified Wellness Architect</div>
+        </div>
+        <div class="text-gold text-xs">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="glass p-10 reveal delay-3" style="border-radius:2px;">
+      <span class="font-serif text-5xl text-gold/30 leading-none block mb-4">"</span>
+      <p class="font-sans text-base text-text-base italic mb-8 leading-relaxed">I dissolved my limiting beliefs on day 4. By week 2, I had manifested two promotions and the ability to perceive frequencies beyond 20kHz.</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-serif text-text-base">Arjun K.</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Frequency Entrepreneur</div>
+        </div>
+        <div class="text-gold text-xs">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="glass p-10 reveal delay-4" style="border-radius:2px;">
+      <span class="font-serif text-5xl text-gold/30 leading-none block mb-4">"</span>
+      <p class="font-sans text-base text-text-base italic mb-8 leading-relaxed">My chakras are now fully load-balanced. I run on 4 vials a month and haven't needed sleep in the conventional sense since Q3 2024.</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-serif text-text-base">Priya V.</div>
+          <div class="font-mono text-[10px] uppercase tracking-[.15em] text-text-muted mt-1">Quantum Sleep Researcher</div>
+        </div>
+        <div class="text-gold text-xs">★★★★★</div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<!-- ════════════════════════════════════════════
+     FAQ
+════════════════════════════════════════════ -->
+<section id="faq" class="py-32 bg-surface">
+  <div class="max-w-2xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="font-mono text-[10px] uppercase tracking-[.22em] text-gold block mb-3">Enquiries</span>
+      <h2 class="font-serif text-5xl text-gold-light">Transcendental Queries</h2>
+    </div>
+
+    <div id="faq-list" class="space-y-0">
+      <div class="acc-item border-b border-gold/10 reveal">
+        <button class="w-full py-6 flex justify-between items-center text-left">
+          <span class="font-serif text-lg text-text-base pr-6">Is this FDA approved?</span>
+          <span class="material-symbols-outlined text-gold acc-icon shrink-0">add</span>
+        </button>
+        <div class="acc-body">
+          <p class="pb-7 font-sans text-sm text-text-muted leading-relaxed">We operate in a space beyond current regulatory frameworks. Our standards exceed traditional earthly guidelines by utilizing quantum validation metrics.</p>
+        </div>
+      </div>
+      <div class="acc-item border-b border-gold/10 reveal delay-1">
+        <button class="w-full py-6 flex justify-between items-center text-left">
+          <span class="font-serif text-lg text-text-base pr-6">What does it actually do?</span>
+          <span class="material-symbols-outlined text-gold acc-icon shrink-0">add</span>
+        </button>
+        <div class="acc-body">
+          <p class="pb-7 font-sans text-sm text-text-muted leading-relaxed">That depends entirely on your vibrational frequency. Common reported effects include cellular resonance, temporal clarity, and the dissolution of standard physiological limits.</p>
+        </div>
+      </div>
+      <div class="acc-item border-b border-gold/10 reveal delay-2">
+        <button class="w-full py-6 flex justify-between items-center text-left">
+          <span class="font-serif text-lg text-text-base pr-6">How often should the ritual be performed?</span>
+          <span class="material-symbols-outlined text-gold acc-icon shrink-0">add</span>
+        </button>
+        <div class="acc-body">
+          <p class="pb-7 font-sans text-sm text-text-muted leading-relaxed">A single drop under the tongue during sunrise is the standard initiation. Advanced practitioners may align dosage with lunar cycles for maximum bio-amplification.</p>
+        </div>
+      </div>
+      <div class="acc-item border-b border-gold/10 reveal delay-3">
+        <button class="w-full py-6 flex justify-between items-center text-left">
+          <span class="font-serif text-lg text-text-base pr-6">Why is it so expensive?</span>
+          <span class="material-symbols-outlined text-gold acc-icon shrink-0">add</span>
+        </button>
+        <div class="acc-body">
+          <p class="pb-7 font-sans text-sm text-text-muted leading-relaxed">Scarcity is the price of sovereignty. The zero-point extraction process cannot be scaled without collapsing the quantum coherence of the compounds. We refuse to compromise.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="pt-20 pb-36 bg-bg border-t border-gold/10">
+  <div class="max-w-[1440px] mx-auto px-6 md:px-16">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+      <div>
+        <div class="font-serif text-2xl text-gold-light mb-3">Aureum Serpentis</div>
+        <p class="font-sans text-sm text-text-muted max-w-xs leading-relaxed">Quantum-enhanced wellness for those who operate beyond conventional biological limits.</p>
+      </div>
+      <div class="flex flex-wrap gap-10">
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-[.18em] text-gold mb-4">Product</div>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Classic Formula</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Apex Gold Reserve</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Obsidian Elixir</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-[.18em] text-gold mb-4">Company</div>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">The Alchemy</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Biophysics</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Private Salon</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-[.18em] text-gold mb-4">Legal</div>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Privacy</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Terms</a>
+            <a href="#" class="font-sans text-sm text-text-muted hover:text-gold-light transition-colors">Disclaimer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="font-mono text-[9px] uppercase tracking-[.12em] text-text-muted/40 max-w-lg leading-relaxed">
+        Disclaimer: Aureum Serpentis does not guarantee nirvana. Any dissolution of identity is the user's own frequency alignment. Not evaluated by any food or drug authority.
+      </p>
+      <div class="font-mono text-[9px] uppercase tracking-[.12em] text-text-muted/30">© MMXXIV Aureum Serpentis</div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════
+     URGENCY BAR
+════════════════════════════════════════════ -->
+<div class="fixed bottom-0 left-0 w-full z-50 border-t border-gold/15" style="background:rgba(5,7,10,0.92);backdrop-filter:blur(20px);">
+  <div class="max-w-[1440px] mx-auto px-6 md:px-16 h-12 flex items-center justify-between">
+    <p class="font-mono text-[10px] uppercase tracking-[.14em] text-gold/80">
+      ⚡ Only 7 vials remain at this price. The algorithm adjusts at midnight.
+    </p>
+    <div class="flex items-center gap-5">
+      <span class="font-mono text-base text-gold-light tabular-nums" id="countdown">00:14:22</span>
+      <button class="btn-gold" style="padding:7px 20px;font-size:9px;">Claim Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scroll to top -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+  class="fixed bottom-16 right-5 z-50 w-9 h-9 glass flex items-center justify-center hover:border-gold/50 transition-all"
+  style="border-radius:2px;">
+  <span class="material-symbols-outlined text-gold text-base">arrow_upward</span>
+</button>
+
+
+<!-- ════════════════════════════════════════════
+     ECOMBOT CHAT WIDGET
+════════════════════════════════════════════ -->
+
+<!-- Floating trigger button -->
+<button id="chat-trigger"
+  class="fixed z-[60] flex items-center gap-2.5 btn-gold shadow-[0_0_40px_rgba(201,146,42,0.3)]"
+  style="bottom:60px;right:80px;border-radius:2px;padding:11px 20px;transition:transform .2s ease,box-shadow .2s ease;"
+  onclick="toggleChat()">
+  <span class="material-symbols-outlined text-[18px]" id="chat-trigger-icon">chat</span>
+  <span class="font-mono text-[10px] uppercase tracking-[.18em]" id="chat-trigger-label">Ask eComBot</span>
+</button>
+
+<!-- Chat panel -->
+<div id="chat-panel"
+  class="fixed z-[60] glass flex flex-col"
+  style="
+    bottom: 110px; right: 80px;
+    width: min(520px, calc(100vw - 32px));
+    height: min(680px, calc(100vh - 140px));
+    border-radius: 2px;
+    border-color: rgba(201,146,42,0.35);
+    box-shadow: 0 0 80px rgba(201,146,42,0.12), 0 32px 80px rgba(0,0,0,0.6);
+    transform: scale(0.92) translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+  ">
+
+  <!-- Panel header -->
+  <div class="flex items-center justify-between px-5 py-4 border-b" style="border-color:rgba(201,146,42,0.18);flex-shrink:0;">
+    <div class="flex items-center gap-3">
+      <div class="w-2 h-2 rounded-full bg-amber" style="box-shadow:0 0 6px rgba(255,184,0,0.8);animation:pulse-dot 2s ease-in-out infinite;"></div>
+      <span class="font-serif text-base text-gold-light">eComBot</span>
+      <span class="font-mono text-[9px] uppercase tracking-[.15em] text-text-muted">Aureum Serpentis</span>
+    </div>
+    <button onclick="toggleChat()" class="text-text-muted hover:text-gold-light transition-colors">
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="chat-messages"
+    class="flex-1 overflow-y-auto px-5 py-4 space-y-4"
+    style="scrollbar-width:thin;scrollbar-color:rgba(201,146,42,0.2) transparent;">
+    <!-- Welcome message -->
+    <div class="flex gap-3 agent-msg">
+      <div class="w-6 h-6 rounded-full bg-surface-3 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+        <span class="font-serif text-[10px] text-gold">A</span>
+      </div>
+      <div class="glass px-4 py-3 text-text-base max-w-[85%]" style="border-radius:0 8px 8px 8px;font-size:15px;line-height:1.6;">
+        Welcome. I am your personal guide to the Aureum Serpentis collection. How may I assist your transcendence today?
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing indicator (hidden by default) -->
+  <div id="chat-typing" class="px-5 pb-2 hidden">
+    <div class="flex gap-3 items-center">
+      <div class="w-6 h-6 rounded-full bg-surface-3 border border-gold/20 flex items-center justify-center shrink-0">
+        <span class="font-serif text-[10px] text-gold">A</span>
+      </div>
+      <div class="glass px-4 py-3" style="border-radius:0 8px 8px 8px;">
+        <div class="flex gap-1 items-center h-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-gold" style="animation:typing-dot .9s ease-in-out infinite;"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gold" style="animation:typing-dot .9s ease-in-out .2s infinite;"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gold" style="animation:typing-dot .9s ease-in-out .4s infinite;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="px-4 pb-4 pt-2 border-t" style="border-color:rgba(201,146,42,0.12);flex-shrink:0;">
+    <div class="flex gap-2 items-end">
+      <textarea
+        id="chat-input"
+        rows="1"
+        placeholder="Ask about our elixirs, orders, rituals…"
+        class="flex-1 bg-transparent border border-gold/20 text-text-base px-4 py-3 outline-none resize-none focus:border-gold/50 transition-colors placeholder-text-muted"
+        style="border-radius:2px;font-family:Inter,sans-serif;font-size:15px;line-height:1.5;max-height:120px;"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"
+      ></textarea>
+      <button onclick="sendMessage()"
+        class="btn-gold shrink-0 flex items-center justify-center"
+        style="width:42px;height:42px;padding:0;border-radius:2px;" id="chat-send">
+        <span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+      </button>
+    </div>
+    <p class="font-mono text-[9px] uppercase tracking-[.12em] text-text-muted/40 mt-2 text-center">
+      Powered by Google ADK · Local Model
+    </p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script>
+// ── Hero WebGL quantum glow ─────────────────────────────────────────
+(function(){
+  const c = document.getElementById('hero-gl');
+  function sync(){ const w=c.clientWidth||1280,h=c.clientHeight||720; if(c.width!==w||c.height!==h){c.width=w;c.height=h;} }
+  if(typeof ResizeObserver!=='undefined') new ResizeObserver(sync).observe(c);
+  sync();
+  const gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+  if(!gl)return;
+  const vs=`attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0,1);}`;
+  const fs=`precision highp float;uniform float t;uniform vec2 r;varying vec2 v;
+  void main(){
+    vec2 uv=v;
+    float d=distance(uv,vec2(.5));
+    float g=.04/(d+.08);
+    vec3 col=vec3(1.,.72,.22);
+    g*=.75+.25*sin(t*1.4);
+    float n=fract(sin(dot(uv*t,vec2(12.9898,78.233)))*43758.5453);
+    g+=n*.015;
+    gl_FragColor=vec4(col*g,g*.45);
+  }`;
+  function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+  const prog=gl.createProgram();
+  gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'p');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const uT=gl.getUniformLocation(prog,'t'),uR=gl.getUniformLocation(prog,'r');
+  function render(t){
+    if(typeof ResizeObserver==='undefined')sync();
+    gl.viewport(0,0,c.width,c.height);
+    if(uT)gl.uniform1f(uT,t*.001);
+    if(uR)gl.uniform2f(uR,c.width,c.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+
+// ── Helix dots ──────────────────────────────────────────────────────
+(function(){
+  const con=document.getElementById('helix-container');
+  for(let i=0;i<18;i++){
+    const d=document.createElement('div');
+    d.className='helix-dot';
+    d.style.top=`${i*5.2}%`;
+    con.appendChild(d);
+    let t=i*.42;
+    setInterval(()=>{
+      t+=.035;
+      const x=Math.sin(t)*52;
+      d.style.transform=`translateX(calc(-50% + ${x}px))`;
+      d.style.opacity=((Math.cos(t)+1.25)/2.25).toFixed(2);
+    },26);
+  }
+})();
+
+// ── Scroll reveal ───────────────────────────────────────────────────
+(function(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+})();
+
+// ── Accordion ───────────────────────────────────────────────────────
+document.querySelectorAll('.acc-item button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+// ── Countdown ───────────────────────────────────────────────────────
+(function(){
+  const el=document.getElementById('countdown');
+  let[h,m,s]=el.textContent.split(':').map(Number);
+  setInterval(()=>{
+    s--;
+    if(s<0){s=59;m--;}
+    if(m<0){m=59;h--;}
+    if(h<0){h=m=s=0;}
+    el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  },1000);
+})();
+
+// ── Scroll to top ───────────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  document.getElementById('scroll-top').classList.toggle('show',window.scrollY>500);
+});
+
+// ── CSS spin keyframe for helix rings ───────────────────────────────
+const style=document.createElement('style');
+style.textContent=`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`;
+document.head.appendChild(style);
+
+// ── Chat widget extra styles ─────────────────────────────────────────
+const chatStyle = document.createElement('style');
+chatStyle.textContent = `
+  @keyframes pulse-dot {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:.4; transform:scale(0.7); }
+  }
+  @keyframes typing-dot {
+    0%,100% { opacity:.3; transform:translateY(0); }
+    50%      { opacity:1;  transform:translateY(-3px); }
+  }
+  #chat-messages::-webkit-scrollbar { width:4px; }
+  #chat-messages::-webkit-scrollbar-track { background:transparent; }
+  #chat-messages::-webkit-scrollbar-thumb { background:rgba(201,146,42,0.2); border-radius:2px; }
+  #chat-panel.open {
+    opacity:1 !important;
+    transform:scale(1) translateY(0) !important;
+    pointer-events:auto !important;
+  }
+  .user-bubble {
+    display:flex; justify-content:flex-end;
+  }
+  .user-bubble > div {
+    background:rgba(201,146,42,0.15);
+    border:1px solid rgba(201,146,42,0.25);
+    border-radius:8px 0 8px 8px;
+    padding:12px 16px;
+    font-size:15px;
+    color:#e8e0d4;
+    line-height:1.6;
+    max-width:85%;
+  }
+  .agent-msg > div:last-child {
+    background:rgba(13,16,20,0.6);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(201,146,42,0.15);
+  }
+  /* streaming cursor blink */
+  .streaming::after {
+    content:'▋';
+    color:#C9922A;
+    animation:blink .7s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+`;
+document.head.appendChild(chatStyle);
+
+// ── Chat logic ───────────────────────────────────────────────────────
+const ADK_URL   = '';
+const APP_NAME  = 'src';
+const USER_ID   = 'storefront-user';
+let   SESSION_ID = null;
+let   chatOpen   = false;
+let   isStreaming = false;
+
+async function getOrCreateSession() {
+  if (SESSION_ID) return SESSION_ID;
+  try {
+    const r = await fetch(`${ADK_URL}/apps/${APP_NAME}/users/${USER_ID}/sessions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    const data = await r.json();
+    SESSION_ID = data.id;
+    return SESSION_ID;
+  } catch {
+    return null;
+  }
+}
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const panel   = document.getElementById('chat-panel');
+  const icon    = document.getElementById('chat-trigger-icon');
+  const label   = document.getElementById('chat-trigger-label');
+  panel.classList.toggle('open', chatOpen);
+  icon.textContent  = chatOpen ? 'close' : 'chat';
+  label.textContent = chatOpen ? 'Close' : 'Ask eComBot';
+  if (chatOpen) {
+    setTimeout(() => document.getElementById('chat-input').focus(), 280);
+    if (!SESSION_ID) getOrCreateSession();
+  }
+}
+
+function appendMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  const wrapper   = document.createElement('div');
+
+  if (role === 'user') {
+    wrapper.className = 'user-bubble';
+    wrapper.innerHTML = `<div>${escHtml(text)}</div>`;
+  } else {
+    wrapper.className = 'flex gap-3 agent-msg';
+    wrapper.innerHTML = `
+      <div class="w-6 h-6 rounded-full bg-surface-3 border border-gold/20 flex items-center justify-center shrink-0 mt-0.5" style="background:#1a1f26;">
+        <span class="font-serif text-[10px]" style="color:#C9922A;">A</span>
+      </div>
+      <div class="px-4 py-3 max-w-[85%]" style="color:#e8e0d4;font-size:15px;line-height:1.6;">${escHtml(text)}</div>`;
+  }
+
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+  return wrapper;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function sendMessage() {
+  if (isStreaming) return;
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Show user bubble
+  appendMessage('user', text);
+
+  // Show typing indicator
+  const typing = document.getElementById('chat-typing');
+  typing.classList.remove('hidden');
+  document.getElementById('chat-messages').scrollTop = 999999;
+
+  // Ensure session
+  const sid = await getOrCreateSession();
+  if (!sid) {
+    typing.classList.add('hidden');
+    appendMessage('agent', 'Could not connect to eComBot. Make sure `adk web src` is running.');
+    return;
+  }
+
+  isStreaming = true;
+  document.getElementById('chat-send').disabled = true;
+
+  try {
+    const response = await fetch(`${ADK_URL}/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app_name:   APP_NAME,
+        user_id:    USER_ID,
+        session_id: sid,
+        new_message: {
+          role: 'user',
+          parts: [{ text }]
+        }
+      })
+    });
+
+    typing.classList.add('hidden');
+
+    if (!response.ok) {
+      appendMessage('agent', `Error ${response.status} — please try again.`);
+      return;
+    }
+
+    const rawText = await response.text();
+
+    let events;
+    try { events = JSON.parse(rawText); } catch { events = []; }
+
+    let replyText = '';
+    for (const evt of (Array.isArray(events) ? events : [events])) {
+      const parts = evt?.content?.parts ?? [];
+      // Skip events that only contain tool calls or tool responses
+      const hasToolCall = parts.some(p => p.functionCall || p.functionResponse);
+      if (hasToolCall) continue;
+      for (const p of parts) {
+        if (typeof p.text === 'string' && p.text.trim()) {
+          replyText = p.text;
+        }
+      }
+    }
+
+    appendMessage('agent', replyText || 'No response received.');
+
+  } catch (err) {
+    typing.classList.add('hidden');
+    appendMessage('agent', 'Connection error. Is `adk web src` running on port 8000?');
+  } finally {
+    isStreaming = false;
+    document.getElementById('chat-send').disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

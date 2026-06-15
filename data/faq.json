@@ -1,0 +1,52 @@
+[
+  {
+    "id": "FAQ-001",
+    "question": "What is your return policy?",
+    "answer": "We accept returns within 7 days of delivery if the vial is unopened and in original packaging. Contact support with your order ID to initiate a return."
+  },
+  {
+    "id": "FAQ-002",
+    "question": "How do I track my order?",
+    "answer": "Provide your order ID (format: ORD-XXX) and our eComBot will retrieve your live order status and estimated delivery date."
+  },
+  {
+    "id": "FAQ-003",
+    "question": "What payment methods do you accept?",
+    "answer": "We accept UPI, credit/debit cards, net banking, and EMI options via Razorpay. Cash on delivery is not available for Obsidian Elixir."
+  },
+  {
+    "id": "FAQ-004",
+    "question": "How do I claim warranty?",
+    "answer": "Email warranty@aureumserpentis.com with your order ID, a photo of the product, and a description of the issue. We respond within 48 hours."
+  },
+  {
+    "id": "FAQ-005",
+    "question": "Is the elixir safe to consume?",
+    "answer": "Aureum Serpentis products are wellness elixirs intended for topical ritual use only. They are not for internal consumption. Consult your ancestral healer before use."
+  },
+  {
+    "id": "FAQ-006",
+    "question": "Can I cancel my order?",
+    "answer": "Orders can be cancelled before dispatch. Once shipped, cancellation is not possible. Contact support immediately with your order ID if you need to cancel."
+  },
+  {
+    "id": "FAQ-007",
+    "question": "Do you ship internationally?",
+    "answer": "Currently we ship within India only. International shipping is planned for Q4 2026."
+  },
+  {
+    "id": "FAQ-008",
+    "question": "How long does delivery take?",
+    "answer": "Classic Formula: 3-5 days. Apex Gold Reserve: 2-3 days. Obsidian Elixir: 1-2 days express. All timelines are business days."
+  },
+  {
+    "id": "FAQ-009",
+    "question": "What makes the Obsidian Elixir special?",
+    "answer": "The Obsidian Elixir is a numbered limited edition with only 33 vials globally. Each comes with a lifetime authenticity certificate and is sourced from a single serpent lineage."
+  },
+  {
+    "id": "FAQ-010",
+    "question": "Are there any side effects?",
+    "answer": "No clinical side effects have been observed in our quantum-calibrated trials. However, ancestral sensitivity may vary. Discontinue use if reality feels significantly altered."
+  }
+]

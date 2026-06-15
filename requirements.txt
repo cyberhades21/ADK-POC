@@ -1,0 +1,17 @@
+google-adk
+litellm
+ollama
+python-dotenv
+
+# UI proxy server
+uvicorn
+starlette
+httpx
+
+# Day 5-6: RAG
+chromadb
+sentence-transformers
+pypdf
+
+# Day 8: MCP servers
+fastmcp

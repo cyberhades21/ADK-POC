@@ -1,0 +1,29 @@
+[
+  {
+    "id": "PRD-001",
+    "name": "Classic Formula",
+    "price": 2999,
+    "stock": 120,
+    "description": "The original Aureum Serpentis elixir. Quantum-calibrated for daily wellness rituals. Contains 108 bio-compounds sourced from ancestral snake venom distillates.",
+    "warranty": "6 months against structural defects.",
+    "shipping": "3-5 business days."
+  },
+  {
+    "id": "PRD-002",
+    "name": "Apex Gold Reserve",
+    "price": 5499,
+    "stock": 45,
+    "description": "Advanced formula for elevated wellness seekers. 24-karat gold-infused with 432Hz resonance calibration. For those who operate beyond conventional biological limits.",
+    "warranty": "1 year premium warranty.",
+    "shipping": "2-3 business days with signature required."
+  },
+  {
+    "id": "PRD-003",
+    "name": "Obsidian Elixir",
+    "price": 12000,
+    "stock": 33,
+    "description": "Ultra-rare limited edition. Only 33 vials exist worldwide. Sourced from a single serpent lineage dating back to MMXXI. Each vial is numbered and certified.",
+    "warranty": "Lifetime authenticity certificate included.",
+    "shipping": "Express only, insured. 1-2 business days."
+  }
+]
