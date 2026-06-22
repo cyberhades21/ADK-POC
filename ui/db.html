@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DB Explorer — Aureum Serpentis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #05070A;
+    --surface:  #0D1014;
+    --surface2: #12171D;
+    --border:   rgba(201,146,42,0.18);
+    --gold:     #C9922A;
+    --gold-lt:  #E8B84B;
+    --text:     #E8E0D4;
+    --muted:    #7A7068;
+    --green:    #4CAF7D;
+    --red:      #E05C5C;
+    --blue:     #5C9EE0;
+    --amber:    #E0A85C;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar-header {
+    padding: 20px 16px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-header a {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 10px;
+    letter-spacing: .08em;
+  }
+  .sidebar-header a:hover { color: var(--gold); }
+  .sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--gold-lt);
+  }
+
+  .sidebar-section { padding: 12px 0; }
+  .sidebar-label {
+    padding: 4px 16px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+  }
+  .table-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+  }
+  .table-btn:hover { background: rgba(201,146,42,.08); }
+  .table-btn.active { background: rgba(201,146,42,.15); color: var(--gold-lt); }
+  .table-btn .count {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+  .table-icon { font-size: 12px; opacity: .5; }
+
+  /* ── Topbar ── */
+  .topbar {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .topbar h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--gold-lt);
+    flex: 1;
+  }
+  .topbar .meta { font-size: 12px; color: var(--muted); }
+
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    padding: 7px 12px 7px 32px;
+    border-radius: 4px;
+    outline: none;
+    width: 240px;
+    transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  /* ── Table area ── */
+  .table-area {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  thead { position: sticky; top: 0; z-index: 10; }
+  thead th {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    text-align: left;
+    color: var(--gold);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th:hover { color: var(--gold-lt); }
+  thead th .sort-icon { opacity: .4; margin-left: 4px; }
+  thead th.sorted .sort-icon { opacity: 1; }
+
+  tbody tr { border-bottom: 1px solid rgba(201,146,42,.06); transition: background .1s; }
+  tbody tr:hover { background: rgba(201,146,42,.05); }
+  tbody td {
+    padding: 9px 16px;
+    color: var(--text);
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  tbody td.null { color: var(--muted); font-style: italic; }
+
+  /* status badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .04em;
+  }
+  .badge-shipped    { background: rgba(92,158,224,.15); color: var(--blue); }
+  .badge-delivered  { background: rgba(76,175,125,.15); color: var(--green); }
+  .badge-processing { background: rgba(224,168,92,.15); color: var(--amber); }
+  .badge-cancelled  { background: rgba(224,92,92,.15);  color: var(--red); }
+  .badge-out        { background: rgba(201,146,42,.2);  color: var(--gold-lt); }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .pagination .info { flex: 1; }
+  .page-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: border-color .15s;
+  }
+  .page-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold-lt); }
+  .page-btn:disabled { opacity: .3; cursor: default; }
+
+  /* ── Empty / loading ── */
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--muted);
+    gap: 12px;
+    font-size: 13px;
+  }
+  .empty-icon { font-size: 40px; opacity: .2; }
+
+  /* ── Stats cards ── */
+  .stats {
+    display: flex;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 20px;
+    min-width: 140px;
+  }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+  .stat-value { font-size: 28px; color: var(--gold-lt); font-family: 'Playfair Display', serif; margin-top: 4px; }
+  .stat-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(201,146,42,.2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="/">← Storefront</a>
+      <div class="sidebar-title">DB Explorer</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tables</div>
+      <div id="table-list">
+        <div style="padding:16px;color:var(--muted);font-size:12px;">Loading…</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Stats (shown on load) -->
+    <div class="stats" id="stats-bar">
+      <div class="stat-card">
+        <div class="stat-label">Orders</div>
+        <div class="stat-value" id="stat-orders">—</div>
+        <div class="stat-sub">total records</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Products</div>
+        <div class="stat-value" id="stat-products">—</div>
+        <div class="stat-sub">total records</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">DB File</div>
+        <div class="stat-value" style="font-size:14px;margin-top:8px;font-family:JetBrains Mono,monospace;">ecombot.db</div>
+        <div class="stat-sub">SQLite · local</div>
+      </div>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar" id="topbar" style="display:none;">
+      <h2 id="table-title">—</h2>
+      <span class="meta" id="table-meta"></span>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="search-input" type="text" placeholder="Search all columns…"/>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-area" id="table-area">
+      <div class="empty">
+        <div class="empty-icon">⬡</div>
+        <div>Select a table from the sidebar</div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination" style="display:none;">
+      <span class="info" id="page-info"></span>
+      <button class="page-btn" id="btn-prev" onclick="changePage(-1)">← Prev</button>
+      <button class="page-btn" id="btn-next" onclick="changePage(1)">Next →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const LIMIT = 50;
+let currentTable = null;
+let currentOffset = 0;
+let currentQuery  = '';
+let searchTimer   = null;
+let sortCol       = null;
+let sortDir       = 'asc';
+
+// ── Boot ──────────────────────────────────────────────────
+async function boot() {
+  const [tables, stats] = await Promise.all([
+    fetch('/api/db/tables').then(r => r.json()),
+    fetch('/api/db/stats').then(r => r.json()),
+  ]);
+
+  // stats
+  document.getElementById('stat-orders').textContent   = stats.stats?.orders   ?? '—';
+  document.getElementById('stat-products').textContent = stats.stats?.products ?? '—';
+
+  // sidebar
+  const list = document.getElementById('table-list');
+  list.innerHTML = '';
+  for (const t of tables.tables) {
+    const count = stats.stats?.[t] ?? '';
+    const btn   = document.createElement('button');
+    btn.className = 'table-btn';
+    btn.innerHTML = `<span class="table-icon">▤</span>${t}<span class="count">${count}</span>`;
+    btn.onclick   = () => loadTable(t);
+    list.appendChild(btn);
+  }
+}
+
+// ── Load table ────────────────────────────────────────────
+async function loadTable(table, offset = 0) {
+  currentTable  = table;
+  currentOffset = offset;
+
+  document.querySelectorAll('.table-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim().startsWith(table));
+  });
+
+  document.getElementById('stats-bar').style.display = 'none';
+  document.getElementById('topbar').style.display    = 'flex';
+  document.getElementById('pagination').style.display = 'flex';
+  document.getElementById('table-title').textContent = table;
+  document.getElementById('table-area').innerHTML    = '<div class="empty"><div style="color:var(--muted)">Loading…</div></div>';
+
+  const url = `/api/db/table/${table}?limit=${LIMIT}&offset=${offset}` +
+              (currentQuery ? `&q=${encodeURIComponent(currentQuery)}` : '');
+  const data = await fetch(url).then(r => r.json());
+
+  if (data.error) {
+    document.getElementById('table-area').innerHTML = `<div class="empty"><div>${data.error}</div></div>`;
+    return;
+  }
+
+  document.getElementById('table-meta').textContent =
+    `${data.total.toLocaleString()} rows · ${data.columns.length} columns`;
+
+  renderTable(data);
+  renderPagination(data);
+}
+
+// ── Render table ──────────────────────────────────────────
+function renderTable(data) {
+  if (!data.rows.length) {
+    document.getElementById('table-area').innerHTML =
+      '<div class="empty"><div class="empty-icon">∅</div><div>No rows found</div></div>';
+    return;
+  }
+
+  const cols = data.columns;
+  let html = '<table><thead><tr>';
+  for (const col of cols) {
+    const active = col === sortCol ? 'sorted' : '';
+    const icon   = col === sortCol ? (sortDir === 'asc' ? '↑' : '↓') : '↕';
+    html += `<th class="${active}" onclick="sortBy('${col}')">${col} <span class="sort-icon">${icon}</span></th>`;
+  }
+  html += '</tr></thead><tbody>';
+
+  for (const row of data.rows) {
+    html += '<tr>';
+    for (const col of cols) {
+      const val = row[col];
+      html += `<td${val === null ? ' class="null"' : ''} title="${escHtml(String(val ?? ''))}">${formatCell(col, val)}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('table-area').innerHTML = html;
+}
+
+function formatCell(col, val) {
+  if (val === null || val === undefined) return '<span style="color:var(--muted)">null</span>';
+  if (col === 'status') return badge(val);
+  if (col === 'can_cancel') return val ? '<span style="color:var(--green)">✓</span>' : '<span style="color:var(--red)">✗</span>';
+  if (col === 'price') return `₹${Number(val).toLocaleString('en-IN')}`;
+  return escHtml(String(val));
+}
+
+function badge(status) {
+  const map = {
+    'Shipped':         'badge-shipped',
+    'Delivered':       'badge-delivered',
+    'Processing':      'badge-processing',
+    'Cancelled':       'badge-cancelled',
+    'Out for Delivery':'badge-out',
+  };
+  const cls = map[status] || '';
+  return `<span class="badge ${cls}">${escHtml(status)}</span>`;
+}
+
+// ── Pagination ────────────────────────────────────────────
+function renderPagination(data) {
+  const from  = data.offset + 1;
+  const to    = Math.min(data.offset + data.limit, data.total);
+  document.getElementById('page-info').textContent =
+    `Showing ${from}–${to} of ${data.total.toLocaleString()} rows`;
+  document.getElementById('btn-prev').disabled = data.offset === 0;
+  document.getElementById('btn-next').disabled = to >= data.total;
+}
+
+function changePage(dir) {
+  const newOffset = currentOffset + dir * LIMIT;
+  if (newOffset < 0) return;
+  loadTable(currentTable, newOffset);
+}
+
+// ── Sort ──────────────────────────────────────────────────
+function sortBy(col) {
+  if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortCol = col; sortDir = 'asc'; }
+  // client-side sort on current page
+  const tbody = document.querySelector('tbody');
+  if (!tbody) return;
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const colIdx = Array.from(document.querySelectorAll('thead th'))
+    .findIndex(th => th.textContent.trim().startsWith(col));
+  rows.sort((a, b) => {
+    const av = a.cells[colIdx]?.textContent.trim() ?? '';
+    const bv = b.cells[colIdx]?.textContent.trim() ?? '';
+    const n  = Number(av) - Number(bv);
+    if (!isNaN(n)) return sortDir === 'asc' ? n : -n;
+    return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  // update header icons
+  document.querySelectorAll('thead th').forEach((th, i) => {
+    const isActive = i === colIdx;
+    th.classList.toggle('sorted', isActive);
+    th.querySelector('.sort-icon').textContent =
+      isActive ? (sortDir === 'asc' ? '↑' : '↓') : '↕';
+  });
+}
+
+// ── Search ────────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    currentQuery  = e.target.value.trim();
+    currentOffset = 0;
+    if (currentTable) loadTable(currentTable, 0);
+  }, 300);
+});
+
+// ── Utils ─────────────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+boot();
+</script>
+</body>
+</html>

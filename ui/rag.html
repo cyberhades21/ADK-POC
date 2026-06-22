@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RAG Explorer — eComBot</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0F1117;
+    --surface:   #1A1D27;
+    --surface2:  #22263A;
+    --border:    rgba(255,255,255,0.08);
+    --border2:   rgba(255,255,255,0.14);
+    --text:      #E2E8F0;
+    --muted:     #64748B;
+    --accent:    #6366F1;
+    --accent-lt: #818CF8;
+    --green:     #34D399;
+    --amber:     #FBBF24;
+    --red:       #F87171;
+    --teal:      #22D3EE;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .app { display: grid; grid-template-columns: 300px 1fr; height: 100vh; overflow: hidden; }
+
+  /* ── Left Panel ── */
+  .left {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .left-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .left-header a {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: .06em;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .left-header a:hover { color: var(--accent-lt); }
+  .app-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .app-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .app-subtitle { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Status */
+  .status-bar {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .status-label { color: var(--muted); }
+  .status-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .pill-green  { background: rgba(52,211,153,.12); color: var(--green); }
+  .pill-red    { background: rgba(248,113,113,.12); color: var(--red); }
+  .pill-amber  { background: rgba(251,191,36,.12);  color: var(--amber); }
+  .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* Query box */
+  .query-section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .query-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+
+  textarea#query-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+    transition: border-color .2s;
+    height: 80px;
+  }
+  textarea#query-input:focus { border-color: var(--accent); }
+  textarea#query-input::placeholder { color: var(--muted); }
+
+  .query-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .btn-search {
+    flex: 1;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-search:hover { background: var(--accent-lt); }
+  .btn-search:disabled { opacity: .4; cursor: default; }
+
+  .n-results-wrap { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .n-results-wrap select {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    outline: none;
+  }
+
+  /* Filter chips */
+  .filter-section { padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .chip {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent-lt); }
+  .chip.active { background: rgba(99,102,241,.15); border-color: var(--accent); color: var(--accent-lt); }
+
+  /* History */
+  .history-section { flex: 1; overflow-y: auto; padding: 12px 0; }
+  .history-label { padding: 0 20px 8px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .history-item {
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--muted);
+    border-left: 2px solid transparent;
+    transition: all .15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-item:hover { background: var(--surface2); color: var(--text); }
+  .history-item.active { border-left-color: var(--accent); color: var(--accent-lt); background: rgba(99,102,241,.06); }
+
+  /* ── Right Panel ── */
+  .right {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .right-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .right-header h2 { font-size: 14px; font-weight: 500; flex: 1; }
+  .right-header .meta { font-size: 12px; color: var(--muted); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+    padding: 0 24px;
+  }
+  .tab {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent-lt); border-bottom-color: var(--accent); }
+
+  /* Results area */
+  .results-area { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* Empty state */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--muted);
+    gap: 16px;
+    text-align: center;
+  }
+  .empty-icon { font-size: 48px; opacity: .15; }
+  .empty-title { font-size: 16px; font-weight: 500; color: var(--text); opacity: .4; }
+  .empty-sub { font-size: 13px; max-width: 320px; line-height: 1.6; }
+
+  /* Example queries */
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .example-btn {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .example-btn:hover { border-color: var(--accent); color: var(--accent-lt); }
+
+  /* Result cards */
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .result-card:hover { border-color: var(--border2); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .card-rank {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-meta { flex: 1; }
+  .card-source { font-size: 12px; font-weight: 500; color: var(--text); }
+  .card-type { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .score-bar {
+    width: 80px; height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .score-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+  .score-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .card-body { padding: 14px 16px; }
+  .card-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .card-text mark {
+    background: rgba(99,102,241,.25);
+    color: var(--accent-lt);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* Raw JSON tab */
+  .json-view {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--teal);
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+  }
+
+  /* Catalog tab */
+  .catalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .catalog-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .catalog-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .catalog-card-id { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+  .catalog-card-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .catalog-card-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PDF Ingest ── */
+  .pdf-section {
+    padding: 12px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: 1px dashed var(--border2);
+    border-radius: 6px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 8px;
+    background: transparent;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(99,102,241,.06);
+  }
+  .drop-zone.has-file {
+    border-color: var(--green);
+    background: rgba(52,211,153,.06);
+  }
+  .drop-icon { font-size: 20px; opacity: .4; }
+  .drop-text { font-size: 12px; color: var(--muted); text-align: center; }
+  .drop-zone.has-file .drop-text { color: var(--green); }
+
+  .btn-ingest {
+    width: 100%;
+    margin-top: 8px;
+    background: rgba(99,102,241,.15);
+    border: 1px solid var(--accent);
+    color: var(--accent-lt);
+    padding: 7px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: Inter, sans-serif;
+  }
+  .btn-ingest:hover:not(:disabled) { background: var(--accent); color: #fff; }
+  .btn-ingest:disabled { opacity: .3; cursor: default; }
+
+  #ingest-status {
+    font-size: 11px;
+    margin-top: 6px;
+    min-height: 16px;
+    text-align: center;
+  }
+  .status-ok  { color: var(--green); }
+  .status-err { color: var(--red); }
+  .status-working { color: var(--amber); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="left">
+    <div class="left-header">
+      <a href="/">← Storefront</a>
+      <div class="app-title">
+        <div class="dot"></div>
+        RAG Explorer
+      </div>
+      <div class="app-subtitle">Knowledge base search &amp; retrieval</div>
+    </div>
+
+    <div class="status-bar" id="status-bar">
+      <div class="status-row">
+        <span class="status-label">Index status</span>
+        <span class="pill pill-amber" id="status-pill"><span class="pill-dot"></span>Checking…</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Documents</span>
+        <span class="status-val" id="doc-count">—</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Model</span>
+        <span class="status-val" style="color:var(--muted);font-size:10px;">all-MiniLM-L6-v2</span>
+      </div>
+    </div>
+
+    <div class="query-section">
+      <div class="query-label">Query</div>
+      <textarea id="query-input" placeholder="e.g. What is the return policy?&#10;Tell me about the Obsidian Elixir&#10;How long does shipping take?"></textarea>
+      <div class="query-controls">
+        <button class="btn-search" id="btn-search" onclick="runSearch()">Search</button>
+        <div class="n-results-wrap">
+          Top
+          <select id="n-results">
+            <option value="3" selected>3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="query-label">Filter by type</div>
+      <div class="filter-chips" id="filter-chips">
+        <div class="chip active" data-filter="all" onclick="setFilter('all', this)">All</div>
+        <div class="chip" data-filter="product" onclick="setFilter('product', this)">Products</div>
+        <div class="chip" data-filter="faq" onclick="setFilter('faq', this)">FAQ</div>
+      </div>
+    </div>
+
+    <div class="pdf-section">
+      <div class="query-label">Ingest PDF</div>
+      <label class="drop-zone" id="drop-zone">
+        <input type="file" id="pdf-input" accept=".pdf" style="display:none"/>
+        <span class="drop-icon">⬆</span>
+        <span class="drop-text" id="drop-text">Click or drop a PDF</span>
+      </label>
+      <button class="btn-ingest" id="btn-ingest" onclick="ingestPdf()" disabled>Ingest</button>
+      <div id="ingest-status"></div>
+    </div>
+
+    <div class="history-section">
+      <div class="history-label">Recent searches</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right">
+    <div class="right-header">
+      <h2 id="result-title">Results</h2>
+      <span class="meta" id="result-meta"></span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('results', this)">Results</div>
+      <div class="tab" onclick="showTab('raw', this)">Raw JSON</div>
+      <div class="tab" onclick="showTab('catalog', this)">Catalog</div>
+    </div>
+
+    <div class="results-area" id="results-area">
+      <div class="empty-state">
+        <div class="empty-icon">◎</div>
+        <div class="empty-title">No search yet</div>
+        <div class="empty-sub">Type a query on the left and hit Search to retrieve relevant chunks from the knowledge base.</div>
+        <div class="examples">
+          <button class="example-btn" onclick="prefill('What is the return policy?')">return policy</button>
+          <button class="example-btn" onclick="prefill('Obsidian Elixir warranty')">Obsidian warranty</button>
+          <button class="example-btn" onclick="prefill('How long does shipping take?')">shipping time</button>
+          <button class="example-btn" onclick="prefill('payment methods accepted')">payment methods</button>
+          <button class="example-btn" onclick="prefill('cancel my order')">cancel order</button>
+          <button class="example-btn" onclick="prefill('gold reserve price')">gold reserve price</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastResults  = [];
+let activeFilter = 'all';
+let history      = [];
+let activeTab    = 'results';
+let catalogData  = [];
+
+// ── Boot ──────────────────────────────────────────────────
+async function boot() {
+  // Check index status
+  try {
+    const r = await fetch('/api/rag/status');
+    const d = await r.json();
+    const pill = document.getElementById('status-pill');
+    if (d.ready) {
+      pill.className = 'pill pill-green';
+      pill.innerHTML = '<span class="pill-dot"></span>Ready';
+      document.getElementById('doc-count').textContent = `${d.count} chunks`;
+    } else {
+      pill.className = 'pill pill-red';
+      pill.innerHTML = '<span class="pill-dot"></span>Not indexed';
+      document.getElementById('doc-count').textContent = 'Run embed_catalog first';
+    }
+  } catch {
+    document.getElementById('status-pill').innerHTML = '<span class="pill-dot"></span>Offline';
+  }
+
+  // Load catalog for catalog tab
+  try {
+    const r = await fetch('/api/rag/catalog');
+    catalogData = await r.json();
+    // Show PDF chip only if PDFs are indexed
+    const hasPdf = catalogData.some(d => d.type === 'pdf');
+    if (hasPdf) {
+      const chips = document.getElementById('filter-chips');
+      const pdfChip = document.createElement('div');
+      pdfChip.className = 'chip';
+      pdfChip.dataset.filter = 'pdf';
+      pdfChip.textContent = 'PDF';
+      pdfChip.onclick = () => setFilter('pdf', pdfChip);
+      chips.appendChild(pdfChip);
+    }
+  } catch {}
+}
+
+// ── Search ────────────────────────────────────────────────
+async function runSearch() {
+  const query = document.getElementById('query-input').value.trim();
+  if (!query) return;
+
+  const n   = document.getElementById('n-results').value;
+  const btn = document.getElementById('btn-search');
+  btn.disabled = true;
+  btn.textContent = 'Searching…';
+
+  document.getElementById('results-area').innerHTML =
+    '<div class="loading"><div class="spinner"></div>Retrieving chunks…</div>';
+  document.getElementById('result-title').textContent = `"${query}"`;
+  document.getElementById('result-meta').textContent  = '';
+
+  try {
+    const r = await fetch(`/api/rag/search?q=${encodeURIComponent(query)}&n=${n}&filter=${activeFilter}`);
+    const d = await r.json();
+    lastResults = d.results || [];
+    addHistory(query);
+    renderTab();
+    const elapsed = d.elapsed_ms ? `${d.elapsed_ms}ms` : '';
+    document.getElementById('result-meta').textContent =
+      `${lastResults.length} result${lastResults.length !== 1 ? 's' : ''} ${elapsed}`;
+  } catch (e) {
+    document.getElementById('results-area').innerHTML =
+      `<div class="empty-state"><div class="empty-title">Error</div><div class="empty-sub">${e.message}</div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Search';
+  }
+}
+
+// ── Render ────────────────────────────────────────────────
+function renderTab() {
+  if (activeTab === 'results') renderResults();
+  else if (activeTab === 'raw') renderRaw();
+  else if (activeTab === 'catalog') renderCatalog();
+}
+
+function renderResults() {
+  if (!lastResults.length) {
+    const filterMsg = activeFilter !== 'all'
+      ? `No <strong>${activeFilter}</strong> chunks matched. Try switching the filter to "All".`
+      : 'No chunks matched this query. Try rephrasing or check that the index is built.';
+    document.getElementById('results-area').innerHTML =
+      `<div class="empty-state"><div class="empty-icon">∅</div><div class="empty-title">No matches</div><div class="empty-sub">${filterMsg}</div></div>`;
+    return;
+  }
+  const query = document.getElementById('query-input').value.trim();
+  let html = '';
+  lastResults.forEach((r, i) => {
+    const score    = Math.max(0, 1 - r.distance / 2);
+    const pct      = Math.round(score * 100);
+    const fillColor = score > 0.7 ? 'var(--green)' : score > 0.4 ? 'var(--amber)' : 'var(--red)';
+    const typeLabel = r.metadata?.type ?? 'unknown';
+    const source    = r.metadata?.source ?? '';
+    const page      = r.metadata?.page ? ` · page ${r.metadata.page}` : '';
+    html += `
+    <div class="result-card">
+      <div class="card-header">
+        <div class="card-rank">${i + 1}</div>
+        <div class="card-meta">
+          <div class="card-source">${escHtml(source)}${page}</div>
+          <div class="card-type">${typeLabel}</div>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label">relevance</span>
+          <div class="score-bar"><div class="score-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+          <span class="score-num" style="color:${fillColor}">${pct}%</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-text">${highlight(escHtml(r.text), query)}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('results-area').innerHTML = html;
+}
+
+function renderRaw() {
+  document.getElementById('results-area').innerHTML =
+    `<div class="json-view">${escHtml(JSON.stringify(lastResults, null, 2))}</div>`;
+}
+
+function renderCatalog() {
+  if (!catalogData.length) {
+    document.getElementById('results-area').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">∅</div><div class="empty-title">Index empty</div><div class="empty-sub">Run <code style="background:var(--surface2);padding:2px 6px;border-radius:3px;">python -m src.rag.embed_catalog</code> to build the index.</div></div>';
+    return;
+  }
+
+  // Group by type
+  const groups = {};
+  catalogData.forEach(d => {
+    groups[d.type] = groups[d.type] || [];
+    groups[d.type].push(d);
+  });
+
+  const typeColor = { product: 'var(--teal)', faq: 'var(--green)', pdf: 'var(--amber)' };
+  let html = '';
+
+  for (const [type, items] of Object.entries(groups)) {
+    const color = typeColor[type] || 'var(--muted)';
+    html += `<div style="margin-bottom:24px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:${color};margin-bottom:12px;font-weight:600;">
+        ${type} <span style="color:var(--muted);font-weight:400;">(${items.length})</span>
+      </div>
+      <div class="catalog-grid">`;
+    items.forEach(d => {
+      // Extract a readable title from the text
+      const firstLine = d.text.split('—')[0].split('Q:')[1]?.trim() || d.text.split('—')[0].trim();
+      const preview   = d.text.slice(0, 160);
+      html += `
+      <div class="catalog-card">
+        <div class="catalog-card-top">
+          <span class="catalog-card-id">${escHtml(d.id)}</span>
+          <span style="font-size:10px;color:${color};">${escHtml(d.source)}</span>
+        </div>
+        <div class="catalog-card-title">${escHtml(firstLine.slice(0, 60))}</div>
+        <div class="catalog-card-text">${escHtml(preview)}${d.text.length > 160 ? '…' : ''}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+
+  document.getElementById('results-area').innerHTML = html;
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+function showTab(tab, el) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (lastResults.length || tab === 'catalog') renderTab();
+}
+
+// ── Filter ────────────────────────────────────────────────
+function setFilter(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── History ───────────────────────────────────────────────
+function addHistory(query) {
+  history = [query, ...history.filter(h => h !== query)].slice(0, 10);
+  renderHistory();
+}
+
+function renderHistory() {
+  const q   = document.getElementById('query-input').value.trim();
+  const el  = document.getElementById('history-list');
+  el.innerHTML = history.map(h =>
+    `<div class="history-item${h === q ? ' active' : ''}" onclick="prefill(${JSON.stringify(h)})">${escHtml(h)}</div>`
+  ).join('');
+}
+
+function prefill(q) {
+  document.getElementById('query-input').value = q;
+  runSearch();
+}
+
+// ── Utils ─────────────────────────────────────────────────
+function highlight(text, query) {
+  if (!query) return text;
+  const words = query.split(/\s+/).filter(w => w.length > 2);
+  let result = text;
+  for (const w of words) {
+    result = result.replace(new RegExp(`(${w})`, 'gi'), '<mark>$1</mark>');
+  }
+  return result;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PDF Ingest ────────────────────────────────────────────
+let selectedFile = null;
+
+const dropZone  = document.getElementById('drop-zone');
+const pdfInput  = document.getElementById('pdf-input');
+const dropText  = document.getElementById('drop-text');
+const btnIngest = document.getElementById('btn-ingest');
+
+dropZone.addEventListener('click', () => pdfInput.click());
+
+pdfInput.addEventListener('change', e => {
+  if (e.target.files[0]) selectFile(e.target.files[0]);
+});
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') selectFile(f);
+  else setIngestStatus('Only PDF files are supported.', 'err');
+});
+
+function selectFile(file) {
+  selectedFile = file;
+  dropText.textContent = file.name;
+  dropZone.classList.add('has-file');
+  btnIngest.disabled = false;
+  setIngestStatus('');
+}
+
+async function ingestPdf() {
+  if (!selectedFile) return;
+  btnIngest.disabled = true;
+  setIngestStatus('Uploading and ingesting…', 'working');
+
+  const form = new FormData();
+  form.append('file', selectedFile);
+
+  try {
+    const r = await fetch('/api/rag/ingest', { method: 'POST', body: form });
+    const d = await r.json();
+    if (d.error) {
+      setIngestStatus(d.error, 'err');
+    } else {
+      setIngestStatus(`✓ ${d.chunks} chunks ingested from ${d.filename}`, 'ok');
+      // Add PDF chip if not already there
+      const chips = document.getElementById('filter-chips');
+      if (!chips.querySelector('[data-filter="pdf"]')) {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.dataset.filter = 'pdf';
+        chip.textContent = 'PDF';
+        chip.onclick = () => setFilter('pdf', chip);
+        chips.appendChild(chip);
+      }
+      // Refresh status bar
+      boot();
+    }
+  } catch (e) {
+    setIngestStatus('Upload failed: ' + e.message, 'err');
+  } finally {
+    btnIngest.disabled = false;
+  }
+}
+
+function setIngestStatus(msg, type = '') {
+  const el = document.getElementById('ingest-status');
+  el.textContent = msg;
+  el.className = type ? `status-${type}` : '';
+}
+
+// ── Keyboard shortcut ─────────────────────────────────────
+document.getElementById('query-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runSearch();
+});
+
+boot();
+</script>
+</body>
+</html>
