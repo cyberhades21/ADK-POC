@@ -1,0 +1,52 @@
+[
+  {
+    "id": "FAQ-001",
+    "question": "What is your return policy?",
+    "answer": "You may return items within 7 days of delivery if the product is unused and in its original packaging. Contact support with your order ID to initiate a return."
+  },
+  {
+    "id": "FAQ-002",
+    "question": "How do I track my order?",
+    "answer": "Provide your order ID (format: ORD-XXX) and eComBot will retrieve your live order status and estimated delivery date."
+  },
+  {
+    "id": "FAQ-003",
+    "question": "What payment methods do you accept?",
+    "answer": "We accept UPI, credit and debit cards, net banking, and zero-cost EMI on orders above ₹10,000 with select bank cards."
+  },
+  {
+    "id": "FAQ-004",
+    "question": "How do I claim warranty?",
+    "answer": "Contact support with your order ID, a photo of the product, and a description of the issue. We respond within 48 hours and arrange pickup or replacement."
+  },
+  {
+    "id": "FAQ-005",
+    "question": "Can I cancel my order?",
+    "answer": "Orders can be cancelled before they are shipped. Once shipped, cancellation is not possible. Contact support immediately with your order ID if you need to cancel."
+  },
+  {
+    "id": "FAQ-006",
+    "question": "Do you ship internationally?",
+    "answer": "Currently we ship within India only."
+  },
+  {
+    "id": "FAQ-007",
+    "question": "How long does delivery take?",
+    "answer": "Standard delivery takes 3-5 business days. Express delivery takes 1-2 business days. Large items like TVs take 5-7 business days with scheduled installation."
+  },
+  {
+    "id": "FAQ-008",
+    "question": "What is the warranty on Samsung TVs?",
+    "answer": "Samsung TVs carry a 2-year manufacturer warranty covering manufacturing defects. Physical damage and accidental breakage are not covered."
+  },
+  {
+    "id": "FAQ-009",
+    "question": "Do you offer EMI?",
+    "answer": "Yes, zero-cost EMI is available on orders above ₹10,000 with HDFC, ICICI, SBI, and Axis bank credit cards. Tenures of 3, 6, and 12 months are available."
+  },
+  {
+    "id": "FAQ-010",
+    "question": "What phones do you have under 20000?",
+    "answer": "The Redmi Note 13 is priced at ₹17,999 and is our best option under ₹20,000. It features a 108MP camera, AMOLED display, and 5000mAh battery."
+  }
+]

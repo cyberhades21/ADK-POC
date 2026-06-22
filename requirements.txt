@@ -1,0 +1,8 @@
+google-adk==2.2.0
+litellm
+langsmith
+fastmcp
+chromadb
+sentence-transformers
+python-dotenv
+httpx

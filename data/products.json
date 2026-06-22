@@ -1,0 +1,102 @@
+[
+  {
+    "id": "PRD-001",
+    "name": "Samsung Galaxy A55",
+    "category": "phone",
+    "price": 32999,
+    "stock": 15,
+    "description": "6.6-inch AMOLED display, 50MP triple camera, 5000mAh battery, 8GB RAM.",
+    "warranty": "1 year manufacturer warranty covering manufacturing defects.",
+    "shipping": "Standard 3-5 business days. Express 1-2 business days."
+  },
+  {
+    "id": "PRD-002",
+    "name": "Redmi Note 13",
+    "category": "phone",
+    "price": 17999,
+    "stock": 28,
+    "description": "6.67-inch AMOLED display, 108MP camera, 5000mAh battery, 6GB RAM.",
+    "warranty": "1 year manufacturer warranty covering manufacturing defects.",
+    "shipping": "Standard 3-5 business days. Express 1-2 business days."
+  },
+  {
+    "id": "PRD-003",
+    "name": "OnePlus Nord CE 4",
+    "category": "phone",
+    "price": 24999,
+    "stock": 20,
+    "description": "6.7-inch AMOLED display, 50MP camera, 5500mAh battery, 8GB RAM, 100W fast charging.",
+    "warranty": "1 year manufacturer warranty.",
+    "shipping": "Standard 3-5 business days. Express 1-2 business days."
+  },
+  {
+    "id": "PRD-004",
+    "name": "Samsung 43-inch 4K Smart TV",
+    "category": "tv",
+    "price": 42999,
+    "stock": 7,
+    "description": "4K UHD resolution, Smart TV with built-in streaming apps, 3 HDMI ports, 2 USB ports.",
+    "warranty": "2 year manufacturer warranty covering manufacturing defects.",
+    "shipping": "Scheduled delivery 5-7 business days with installation available."
+  },
+  {
+    "id": "PRD-005",
+    "name": "Sony 55-inch 4K OLED TV",
+    "category": "tv",
+    "price": 129999,
+    "stock": 3,
+    "description": "OLED 4K display, Dolby Vision and Atmos, Google TV built-in, 4 HDMI 2.1 ports.",
+    "warranty": "2 year manufacturer warranty.",
+    "shipping": "Scheduled delivery 5-7 business days with installation available."
+  },
+  {
+    "id": "PRD-006",
+    "name": "DStv HD Decoder",
+    "category": "decoder",
+    "price": 3499,
+    "stock": 40,
+    "description": "Full HD satellite decoder, compatible with all DStv packages, single view.",
+    "warranty": "1 year manufacturer warranty.",
+    "shipping": "Standard 3-5 business days."
+  },
+  {
+    "id": "PRD-007",
+    "name": "USB-C Charging Cable 2m",
+    "category": "accessory",
+    "price": 499,
+    "stock": 120,
+    "description": "Braided 2-metre USB-C to USB-C cable, supports 65W fast charging, universal compatibility.",
+    "warranty": "6 month warranty.",
+    "shipping": "Standard 3-5 business days."
+  },
+  {
+    "id": "PRD-008",
+    "name": "Realme Buds T310",
+    "category": "accessory",
+    "price": 1999,
+    "stock": 55,
+    "description": "True wireless earbuds with ANC, 40-hour total battery life, IPX5 water resistant.",
+    "warranty": "1 year manufacturer warranty.",
+    "shipping": "Standard 3-5 business days."
+  },
+  {
+    "id": "PRD-009",
+    "name": "Samsung 1TB Portable SSD",
+    "category": "accessory",
+    "price": 8499,
+    "stock": 25,
+    "description": "USB 3.2 Gen 2 portable SSD, 1050MB/s read speed, shock resistant.",
+    "warranty": "3 year manufacturer warranty.",
+    "shipping": "Standard 3-5 business days."
+  },
+  {
+    "id": "PRD-010",
+    "name": "Logitech MX Keys Mini",
+    "category": "accessory",
+    "price": 7999,
+    "stock": 18,
+    "description": "Compact wireless keyboard, backlit keys, Bluetooth multi-device support, USB-C charging.",
+    "warranty": "1 year manufacturer warranty.",
+    "shipping": "Standard 3-5 business days."
+  }
+]
